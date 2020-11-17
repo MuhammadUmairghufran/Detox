@@ -1,6 +1,6 @@
 const AndroidDriver = require('../AndroidDriver');
-const DeviceRegistry = require('../../../DeviceRegistry');
 const GenyCloudDeviceAllocator = require('./GenyCloudDeviceAllocator');
+const GenyDeviceRegistryFactory = require('./GenyDeviceRegistryFactory');
 const GenyCloudExec = require('./exec/GenyCloudExec');
 const RecipesService = require('./services/GenyRecipesService');
 const InstanceLookupService = require('./services/GenyInstanceLookupService');
@@ -17,13 +17,14 @@ class GenyCloudDriver extends AndroidDriver {
 
     const exec = new GenyCloudExec();
     const instanceNaming = new InstanceNaming(); // TODO should consider a permissive impl for debug/dev mode. Maybe even a custom arg in package.json (Detox > ... > genycloud > sharedAccount: false)
-    this._deviceRegistry = DeviceRegistry.forAndroid();
+    this._deviceRegistry = GenyDeviceRegistryFactory.forRuntime();
+    const deviceCleanupRegistry = GenyDeviceRegistryFactory.forGlobalShutdown();
 
     const recipeService = new RecipesService(exec, logger);
     const instanceLookupService = new InstanceLookupService(exec, instanceNaming, this._deviceRegistry);
     const instanceLifecycleService = new InstanceLifecycleService(exec, instanceNaming);
     this._deviceQueryHelper = new DeviceQueryHelper(recipeService);
-    this._deviceAllocator = new GenyCloudDeviceAllocator(this._deviceRegistry, instanceLookupService, instanceLifecycleService);
+    this._deviceAllocator = new GenyCloudDeviceAllocator(this._deviceRegistry, deviceCleanupRegistry, instanceLookupService, instanceLifecycleService);
   }
 
   get name() {
@@ -58,6 +59,10 @@ class GenyCloudDriver extends AndroidDriver {
     await super.cleanup(instance, bundleId);
   }
 
+  // async shutdown() {
+  //   // TODO
+  // }
+
   _assertRecipe(deviceQuery, recipe) {
     if (!recipe) {
       throw new DetoxRuntimeError({
@@ -65,6 +70,18 @@ class GenyCloudDriver extends AndroidDriver {
         hint: `Check that your Genycloud account has a template associated with your Detox device configuration: ${JSON.stringify(deviceQuery)}\n`,
       });
     }
+  }
+
+  static async globalCleanup(instanceLifecycleService) {
+    if (!instanceLifecycleService) {
+      const exec = new GenyCloudExec();
+      instanceLifecycleService = new InstanceLifecycleService(exec, null);
+    }
+
+    const deviceCleanupRegistry = GenyDeviceRegistryFactory.forGlobalShutdown();
+    const deviceUUIDs = await deviceCleanupRegistry.readRegisteredDevices();
+    const killPromises = deviceUUIDs.map((uuid) => instanceLifecycleService.deleteInstance(uuid));
+    await Promise.all(killPromises);
   }
 }
 
