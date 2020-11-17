@@ -13,7 +13,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 
-object SwiperHelperSpec: Spek({
+object SwipeHelperSpec: Spek({
     describe("SwipeHelper") {
         val view = mock<View>()
 

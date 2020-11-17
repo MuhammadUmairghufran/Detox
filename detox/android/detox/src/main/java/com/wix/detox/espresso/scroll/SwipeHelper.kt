@@ -27,7 +27,7 @@ class SwipeHelper(private val createAction: CreateSwipeAction) {
             startPositionX: Double = Double.NaN,
             startPositionY: Double = Double.NaN
     ): ViewAction {
-        val unsafeStartingPoint = AgnosticPoint2D.fromDoubles(startPositionX, startPositionY, direction)
+        val unsafeStartingPoint = AgnosticPoint2D.fromXY(startPositionX, startPositionY, direction)
         val startingPoint = getSafeStartingPoint(unsafeStartingPoint, direction)
         val start = translateFrom(startingPoint, direction)
         val end = translateTo(startingPoint, direction, offset)
@@ -37,8 +37,7 @@ class SwipeHelper(private val createAction: CreateSwipeAction) {
     }
 
     private fun getSafeStartingPoint(unsafeStartingPoint: AgnosticPoint2D, direction: Int): AgnosticPoint2D {
-        val isDescendingMove = direction == MOTION_DIR_UP || direction == MOTION_DIR_LEFT
-        val safeEdge = if (isDescendingMove)
+        val safeEdge = if (isDescending(direction))
             1.0 - EDGE_FUZZ_FACTOR
         else
             0.0 + EDGE_FUZZ_FACTOR
@@ -68,7 +67,7 @@ class SwipeHelper(private val createAction: CreateSwipeAction) {
     private fun translateTo(relativeStart: AgnosticPoint2D, direction: Int, unsafeOffset: Double) = CoordinatesProvider { view ->
         val relativeStartF = relativeStart.toFloatingPoint(direction)
         val xy = GeneralLocation.TOP_LEFT.calculateCoordinates(view)
-        val absoluteStart = AgnosticPoint2D.fromFloats(
+        val absoluteStart = AgnosticPoint2D.fromXY(
                 xy[0] + relativeStartF.x * view.width,
                 xy[1] + relativeStartF.y * view.height,
                 direction
@@ -86,10 +85,10 @@ class SwipeHelper(private val createAction: CreateSwipeAction) {
         xy
     }
 
-    private fun getScreenEdge(view: View, direction: Int) = when (direction) {
-        MOTION_DIR_LEFT, MOTION_DIR_UP -> 0
-        MOTION_DIR_RIGHT -> view.context.resources.displayMetrics.widthPixels
-        MOTION_DIR_DOWN -> view.context.resources.displayMetrics.heightPixels
+    private fun getScreenEdge(view: View, direction: Int) = when {
+        isDescending(direction) -> 0
+        isHorizontal(direction) -> view.context.resources.displayMetrics.widthPixels
+        isVertical(direction) -> view.context.resources.displayMetrics.heightPixels
         else -> throw DetoxErrors.DetoxIllegalArgumentException("Unsupported swipe direction: $direction")
     }
 
