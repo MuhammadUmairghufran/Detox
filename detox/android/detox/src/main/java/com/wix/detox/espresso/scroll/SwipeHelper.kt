@@ -94,6 +94,7 @@ class SwipeHelper(private val createAction: CreateSwipeAction) {
     }
 
     companion object {
+        @JvmStatic
         val default = SwipeHelper { swiper: Swiper,
                                     startCoordinatesProvider: CoordinatesProvider,
                                     endCoordinatesProvider: CoordinatesProvider,

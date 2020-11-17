@@ -176,7 +176,7 @@ public class DetoxAction {
      * @param startOffsetPercentY relative value from 0 to 1
      */
     public static ViewAction swipeInDirection(final int direction, boolean fast, double amount, double startOffsetPercentX, double startOffsetPercentY) {
-        SwipeHelper swipeHelper = SwipeHelper.Companion.getDefault();
+        SwipeHelper swipeHelper = SwipeHelper.getDefault();
         return swipeHelper.swipeInDirection(direction, fast, amount, startOffsetPercentX, startOffsetPercentY);
     }
 

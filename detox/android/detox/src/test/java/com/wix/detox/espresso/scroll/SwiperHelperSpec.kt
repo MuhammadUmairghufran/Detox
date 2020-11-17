@@ -7,8 +7,8 @@ import android.view.View
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.*
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.wix.detox.espresso.common.annot.*
-import org.mockito.Mockito.`when`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
@@ -17,12 +17,12 @@ object SwiperHelperSpec: Spek({
     describe("SwipeHelper") {
         val view = mock<View>()
 
-        var viewX = 1000
-        var viewY = 2000
-        var viewWidth = 2000
-        var viewHeight = 1000
-        var screenWidth = 4000
-        var screenHeight = 5000
+        val viewX = 1000
+        val viewY = 2000
+        val viewWidth = 2000
+        val viewHeight = 1000
+        val screenWidth = 4000
+        val screenHeight = 5000
 
         fun viewLeft() = viewX + viewWidth * 0f;
         fun viewCenter() = viewX + viewWidth * 0.5f;
@@ -44,14 +44,14 @@ object SwiperHelperSpec: Spek({
             mockDisplayMetrics.heightPixels = screenHeight
 
             val mockResources = mock<Resources>()
-            `when`(mockResources.displayMetrics).then { mockDisplayMetrics }
+            whenever(mockResources.displayMetrics).then { mockDisplayMetrics }
 
             val mockContext = mock<Context>()
-            `when`(mockContext.resources).then { mockResources }
-            `when`(view.context).then { mockContext }
-            `when`(view.width).then { viewWidth }
-            `when`(view.height).then { viewHeight }
-            `when`(view.getLocationOnScreen(IntArray(2))).then {
+            whenever(mockContext.resources).then { mockResources }
+            whenever(view.context).then { mockContext }
+            whenever(view.width).then { viewWidth }
+            whenever(view.height).then { viewHeight }
+            whenever(view.getLocationOnScreen(IntArray(2))).then {
                 val arg0 = it.arguments[0]
                 val xy = arg0 as IntArray
                 xy[0] = viewX
@@ -74,13 +74,7 @@ object SwiperHelperSpec: Spek({
             startCoordinatesProvider = _startCoordinatesProvider
             endCoordinatesProvider = _endCoordinatesProvider
             precisionDescriber = _precisionDescriber
-            action = GeneralSwipeAction(
-                    _swiper,
-                    _startCoordinatesProvider,
-                    _endCoordinatesProvider,
-                    _precisionDescriber
-            )
-
+            action = mock()
             action
         }
 
