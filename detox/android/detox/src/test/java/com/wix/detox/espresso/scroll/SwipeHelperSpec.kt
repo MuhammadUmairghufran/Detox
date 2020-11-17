@@ -24,17 +24,17 @@ object SwipeHelperSpec: Spek({
         val screenWidth = 4000
         val screenHeight = 5000
 
-        fun viewLeft() = viewX + viewWidth * 0f;
-        fun viewCenter() = viewX + viewWidth * 0.5f;
-        fun viewRight() = viewX + viewWidth * 1f;
-        fun viewTop() = viewY + viewHeight * 0f;
-        fun viewMiddle() = viewY + viewHeight * 0.5f;
-        fun viewBottom() = viewY + viewHeight * 1f;
-        fun viewFuzzH() = viewWidth * SwipeHelper.edgeFuzzFactor;
-        fun viewFuzzV() = viewHeight * SwipeHelper.edgeFuzzFactor;
+        fun viewLeft() = viewX + viewWidth * 0f
+        fun viewCenter() = viewX + viewWidth * 0.5f
+        fun viewRight() = viewX + viewWidth * 1f
+        fun viewTop() = viewY + viewHeight * 0f
+        fun viewMiddle() = viewY + viewHeight * 0.5f
+        fun viewBottom() = viewY + viewHeight * 1f
+        fun viewFuzzH() = viewWidth * SwipeHelper.edgeFuzzFactor
+        fun viewFuzzV() = viewHeight * SwipeHelper.edgeFuzzFactor
 
-        fun screenTop() = 0f;
-        fun screenLeft() = 0f;
+        fun screenTop() = 0f
+        fun screenLeft() = 0f
         fun screenBottom() = screenTop() + screenHeight
         fun screenRight() = screenLeft() + screenWidth
 
@@ -83,7 +83,7 @@ object SwipeHelperSpec: Spek({
         fun getEndPoint() = toPoint(endCoordinatesProvider.calculateCoordinates(view))
 
         it("should return action of fast swipe up") {
-            val result = swipeHelper.swipeInDirection(MOTION_DIR_UP);
+            val result = swipeHelper.swipeInDirection(MOTION_DIR_UP)
 
             assertEquals(action, result)
             assertEquals(Swipe.FAST, swiper)
@@ -93,7 +93,7 @@ object SwipeHelperSpec: Spek({
         }
 
         it("should return action of fast swipe down") {
-            val result = swipeHelper.swipeInDirection(MOTION_DIR_DOWN);
+            val result = swipeHelper.swipeInDirection(MOTION_DIR_DOWN)
 
             assertEquals(action, result)
             assertEquals(Swipe.FAST, swiper)
@@ -103,7 +103,7 @@ object SwipeHelperSpec: Spek({
         }
 
         it("should return action of fast swipe left") {
-            val result = swipeHelper.swipeInDirection(MOTION_DIR_LEFT);
+            val result = swipeHelper.swipeInDirection(MOTION_DIR_LEFT)
 
             assertEquals(action, result)
             assertEquals(Swipe.FAST, swiper)
@@ -113,7 +113,7 @@ object SwipeHelperSpec: Spek({
         }
 
         it("should return action of fast swipe right") {
-            val result = swipeHelper.swipeInDirection(MOTION_DIR_RIGHT);
+            val result = swipeHelper.swipeInDirection(MOTION_DIR_RIGHT)
 
             assertEquals(action, result)
             assertEquals(Swipe.FAST, swiper)
