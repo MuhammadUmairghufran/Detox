@@ -49,7 +49,7 @@ class SwipeHelper(private val createAction: CreateSwipeAction) {
     }
 
     private fun safeProportion(value: Double, nanFallback: Double): Double {
-        return if (value.equals(Double.NaN)) {
+        return if (value.isNaN()) {
             nanFallback
         } else {
             max(0.0, min(value, 1.0))
